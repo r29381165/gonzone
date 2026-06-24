@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head><meta charset="UTF-8"><title>台股題材總覽</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Anthropic Sans",system-ui,sans-serif;background:var(--color-background-primary,#fff);color:var(--color-text-primary,#1a1a18)}
+:root{
+  --bg1:#fff;--bg2:#f5f4f0;--bg3:#eeecea;
+  --t1:#1a1a18;--t2:#5a5a56;--t3:#8a8a84;
+  --b1:rgba(0,0,0,.12);--b2:rgba(0,0,0,.22);
+  --radius:8px;--radius-lg:12px;
+  --purple-50:#EEEDFE;--purple-800:#3C3489;
+  --teal-50:#E1F5EE;--teal-800:#085041;
+  --amber-50:#FAEEDA;--amber-800:#633806;
+  --blue-50:#E6F1FB;--blue-800:#0C447C;
+  --coral-50:#FAECE7;--coral-800:#712B13;
+  --green-50:#EAF3DE;--green-800:#27500A;
+  --pink-50:#FBEAF0;--pink-800:#72243E;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg1:#1c1c1a;--bg2:#242422;--bg3:#2c2c2a;--t1:#e8e6df;--t2:#a8a69f;--t3:#68675f;--b1:rgba(255,255,255,.1);--b2:rgba(255,255,255,.18)}
+  .d0 .chip{background:#26215C;color:#CECBF6}
+  .d1 .chip{background:#04342C;color:#9FE1CB}
+  .d2 .chip{background:#412402;color:#FAC775}
+  .d3 .chip{background:#042C53;color:#B5D4F4}
+  .d4 .chip{background:#4A1B0C;color:#F5C4B3}
+  .ptag.cn{background:#04342C;color:#9FE1CB}
+  .ptag.global{background:#26215C;color:#CECBF6}
+  .ptag.tw{background:#042C53;color:#B5D4F4}
+  .pcard{background:var(--bg3)}
+  .ask-btn{color:var(--t2);border-color:var(--b1)}
+  .ask-btn:hover{background:var(--bg3)}
+}
+#wrap{display:flex;gap:0;min-height:600px}
+#left{width:50%;border-right:0.5px solid var(--b1);padding:10px 6px 16px 10px;overflow-y:auto;max-height:700px}
+#right{width:50%;overflow-y:auto;max-height:700px;background:var(--bg1)}
+#search-row{display:flex;gap:6px;margin-bottom:8px}
+#search{flex:1;padding:6px 10px;border:0.5px solid var(--b1);border-radius:var(--radius);background:var(--bg2);color:var(--t1);font-size:12px;outline:none}
+.tree{list-style:none;padding:0}
+.tree li{position:relative}
+.nr{display:flex;align-items:center;gap:4px;padding:2px 4px;border-radius:5px;cursor:pointer;user-select:none}
+.nr:hover{background:var(--bg2)}
+.nr.active{background:#E6F1FB}
+@media(prefers-color-scheme:dark){.nr.active{background:#042C53}}
+.ar{font-size:9px;color:var(--t3);width:10px;flex-shrink:0;transition:transform .15s}
+.ar.open{transform:rotate(90deg)}
+.ar.lf{opacity:0;pointer-events:none}
+.chip{display:inline-flex;align-items:center;padding:1px 8px;border-radius:20px;font-size:11.5px;font-weight:500;line-height:1.75}
+.has-info .chip{cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px}
+.ch{list-style:none;padding-left:14px;border-left:0.5px solid var(--b1);margin-left:7px}
+.hidden{display:none}
+.hl{background:#FAC775;color:#412402;border-radius:2px}
+.d0 .chip{background:#EEEDFE;color:#3C3489}
+.d1 .chip{background:#E1F5EE;color:#085041}
+.d2 .chip{background:#FAEEDA;color:#633806}
+.d3 .chip{background:#E6F1FB;color:#0C447C}
+.d4 .chip{background:#FAECE7;color:#712B13}
+#panel{padding:14px 14px 24px;display:none}
+#panel.show{display:block}
+#panel-empty{padding:50px 16px;color:var(--t3);font-size:13px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.ptag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:20px;margin:2px 2px 2px 0;font-weight:500}
+.ptag.cn{background:#E1F5EE;color:#085041}
+.ptag.global{background:#EEEDFE;color:#3C3489}
+.ptag.tw{background:#E6F1FB;color:#0C447C}
+.section{margin-bottom:13px}
+.slabel{font-size:10.5px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.body{font-size:12.5px;color:var(--t2);line-height:1.75}
+.pcard{background:var(--bg2);border-radius:var(--radius);padding:7px 9px;margin-bottom:5px}
+.pname{font-size:12.5px;font-weight:500;color:var(--t1)}
+.pdesc{font-size:11.5px;color:var(--t2);margin-top:2px;line-height:1.55}
+.ask-btn{margin-top:10px;padding:6px 12px;font-size:12px;border:0.5px solid var(--b2);border-radius:var(--radius);background:transparent;color:var(--t2);cursor:pointer;width:100%;text-align:left}
+.ask-btn:hover{background:var(--bg2)}
+.phead{font-size:15px;font-weight:500;color:var(--t1);margin-bottom:8px;padding-bottom:7px;border-bottom:0.5px solid var(--b1)}
+.hint{font-size:11px;color:var(--t3);flex-shrink:0}
+</style>
+</head><body>
+<div id="wrap">
+<div id="left">
+  <div id="search-row">
+    <input id="search" placeholder="搜尋題材…" oninput="doSearch(this.value)">
+    <span class="hint">底線節點可查詳情</span>
+  </div>
+  <ul id="tree" class="tree"></ul>
+</div>
+<div id="right">
+  <div id="panel-empty">
+    <span style="font-size:28px;opacity:.3">☰</span>
+    <span>點擊左側底線題材<br>查看詳細介紹</span>
+  </div>
+  <div id="panel"></div>
+</div>
+</div>
+
+<script>
+const INFO={
+
+// ── 記憶體 ──────────────────────────────────────────────
+hbm:{title:"HBM 高頻寬記憶體",
+tags:[{t:"AI核心",c:"global"},{t:"記憶體",c:"cn"}],
+what:"HBM（High Bandwidth Memory）將多顆 DRAM Die 垂直堆疊，透過矽穿孔（TSV）互連，頻寬可達 1.2 TB/s（HBM3E），是 AI GPU/HPC 的標配記憶體。與 GPU 並排在同一 CoWoS 基板，省去 PCB 傳輸延遲，功耗遠低於 GDDR。",
+players:[
+{name:"SK 海力士",tag:"global",desc:"全球市佔第一（~50%）。HBM3E 12-High 率先量產，MR-MUF 底部填充技術改善散熱與良率；與 NVIDIA H100/H200/B200 深度綁定。"},
+{name:"三星",tag:"global",desc:"市佔約 30%。HBM3E 良率 2024 年加速追趕，12nm 製程有成本優勢，但 AI 客戶認證進度慢於 SK 海力士。"},
+{name:"美光",tag:"global",desc:"市佔約 20%。1β nm 製程功耗優勢顯著，HBM3E 量產稍晚，積極爭取 NVIDIA GB200/GB300 份額。"},
+],
+tw:"CoWoS 封裝（TSMC）；測試：京元電（2449）、欣銓（3264）；載板：南電（8046）、景碩（3189）。台灣無自製 HBM，但封測供應鏈受益明顯。",
+ask:"HBM 供應鏈台灣哪些公司最直接受益"},
+
+hbm2e:{title:"HBM2E",
+tags:[{t:"記憶體",c:"cn"},{t:"前世代",c:"global"}],
+what:"HBM 第二代增強版（2020-2022 年主流），頻寬 460 GB/s，用於 NVIDIA A100、AMD MI100。目前已逐步被 HBM3 取代，價格下滑，仍用於部分邊緣 AI 與科研 HPC。",
+players:[
+{name:"SK 海力士",tag:"global",desc:"HBM2E 最大供應商，供應 NVIDIA A100 系列。"},
+{name:"三星",tag:"global",desc:"A100 替代供應，也用於 Google TPU v4。"},
+{name:"美光",tag:"global",desc:"HBM2E 量產規模較小，主攻伺服器 DRAM 市場。"},
+],
+tw:"HBM2E 封裝測試由日月光、矽品協助，但規模已縮減；聚焦觀察 HBM3E/HBM4 接班時程。",
+ask:"HBM2E 到 HBM4 的世代演進與廠商消長"},
+
+hbm3:{title:"HBM3",
+tags:[{t:"記憶體",c:"cn"},{t:"2023主力",c:"global"}],
+what:"HBM 第三代，頻寬 819 GB/s，用於 NVIDIA H100。Stack 高度 8-High 為主，容量 24GB/Stack。2023 年為 AI 爆發的核心記憶體規格，HBM3E（增強版）為其進化型。",
+players:[
+{name:"SK 海力士",tag:"global",desc:"H100 獨家供應商（初期），HBM3 市佔超過 60%，技術與量產都最領先。"},
+{name:"三星",tag:"global",desc:"HBM3 良率問題曾導致 NVIDIA 認證遲滯，2024 年才逐步放量。"},
+{name:"美光",tag:"global",desc:"HBM3 量產規模有限，主力放在 HBM3E。"},
+],
+tw:"TSMC CoWoS-S 為 H100 HBM3 封裝主力；日月光投控（3711）為後段封裝受益。",
+ask:"HBM3 和 HBM3E 的技術差距與換代節奏"},
+
+hbm3e:{title:"HBM3E",
+tags:[{t:"記憶體",c:"cn"},{t:"2024-2025主力",c:"global"}],
+what:"HBM3E 是 HBM3 的增強版，頻寬提升至 1.2 TB/s，12-High Stack 容量達 36GB/Stack。是 NVIDIA H200、B100/B200 的核心記憶體，也是 2024-2026 年 AI 訓練叢集的主流規格。",
+players:[
+{name:"SK 海力士",tag:"global",desc:"HBM3E 量產最早（2024 Q1），H200/B200 主力供應商。MR-MUF 技術使 12-High 良率顯著優於競品。"},
+{name:"三星",tag:"global",desc:"HBM3E 12nm 製程成本有優勢，但 NVIDIA 認證延遲，現積極切入 AMD MI350 供應。"},
+{name:"美光",tag:"global",desc:"1β nm 製程 HBM3E 功耗最低，H200 NVL 有少量份額，持續提升。"},
+],
+tw:"CoWoS-L（TSMC）為 B200/B100 HBM3E 封裝方案；南電（8046）ABF 載板、景碩（3189）載板受益。",
+ask:"HBM3E 12-High 與 8-High 的差異"},
+
+hbm4:{title:"HBM4（下一世代）",
+tags:[{t:"記憶體",c:"cn"},{t:"2026+",c:"global"}],
+what:"HBM4 目標頻寬 2+ TB/s，採用邏輯晶片（Logic Die）作為底層 Base Die，支援 CXL/AXI 介面，靈活度大幅提升。三大廠均計畫 2025-2026 年量產，供應 NVIDIA GB300/B300 與下一代 AMD GPU。",
+players:[
+{name:"SK 海力士",tag:"global",desc:"HBM4 標準制定主導廠商，計畫 2025 年下半年送樣，2026 年量產。"},
+{name:"三星",tag:"global",desc:"HBM4 與 TSMC 合作 Base Die 封裝，若良率達標可望扳回一城。"},
+{name:"美光",tag:"global",desc:"HBM4 計畫最低調，但 1γ nm 製程若如期推出將有功耗優勢。"},
+],
+tw:"HBM4 Base Die 可能交由 TSMC 代工，封裝複雜度更高，CoWoS 與先進封裝需求進一步擴大。",
+ask:"HBM4 和 HBM3E 的架構差異"},
+
+dram:{title:"DRAM",
+tags:[{t:"記憶體",c:"cn"},{t:"AI伺服器",c:"global"}],
+what:"DRAM 是主要揮發性記憶體，AI 伺服器每台需配置 TB 級 DDR5（8-12 個 DIMM），行動裝置使用 LPDDR5X。AI 浪潮推動伺服器 DRAM ASP 大幅提升。三大廠（三星、SK 海力士、美光）合計市佔超 95%。",
+players:[
+{name:"三星",tag:"global",desc:"全球市佔約 40%，1z/1α nm 量產中，DDR5 與 LPDDR6 為下一競爭場域。"},
+{name:"SK 海力士",tag:"global",desc:"市佔約 30%，AI 伺服器 DDR5 需求受惠，HBM 成功帶動整體溢價。"},
+{name:"美光",tag:"global",desc:"市佔約 25%，1β nm 製程功耗優勢，積極爭取 AI 伺服器標配份額。"},
+{name:"南亞科 (2408)",tag:"tw",desc:"台灣唯一 DRAM 自製廠，DDR4/DDR5 為主，跟漲週期型態明顯，規模與三大廠差距大。"},
+],
+tw:"南亞科（2408）直接受益；力積電（6770）承接 DRAM 代工訂單（iDRAM）；威剛（3260）為 DRAM 模組廠。",
+ask:"南亞科在 DRAM 產業週期的投資邏輯"},
+
+nor:{title:"NOR Flash",
+tags:[{t:"記憶體",c:"cn"},{t:"車用/工控",c:"global"}],
+what:"NOR Flash 支援就地執行（XIP），MCU/SoC 可直接從中執行韌體，廣泛用於車用 ECU、工控、IoT。容量小（MB 級）但讀取速度快、穩定性高，是安全關鍵系統首選。車用 NOR 需通過 AEC-Q100 認證，高門檻造就強護城河。",
+players:[
+{name:"旺宏 (MX, 2337)",tag:"tw",desc:"全球 NOR 龍頭，SLC/MLC 市佔第一。Cypress 退出部分市場後定價力提升，車用 NOR 為主要成長動能，股息殖利率是市場關注重點。"},
+{name:"華邦電 (2344)",tag:"tw",desc:"全球 NOR 市佔第二，W25 系列廣泛應用消費與工控。DDR3 DRAM 亦為其重要業務，雙引擎布局。"},
+{name:"Infineon (Cypress)",tag:"global",desc:"歐美車用 NOR 高可靠度產品為主，已縮減消費性市場，專注車用高階規格。"},
+],
+tw:"旺宏（2337）、華邦電（2344）為台灣直接標的。觀察車用 NOR ASP 趨勢、旺宏現金股利政策與良率改善進度。",
+ask:"旺宏 NOR Flash 的護城河與估值邏輯"},
+
+nand:{title:"NAND Flash",
+tags:[{t:"記憶體",c:"cn"},{t:"SSD",c:"global"}],
+what:"NAND Flash 為主流非揮發性儲存，依每 Cell 儲存位元：SLC（1bit）、MLC（2bit）、TLC（3bit 主流）、QLC（4bit）。AI 資料中心部署帶動高 TBW SSD 需求爆發。3D NAND 堆疊層數持續提升（目前最高 300+ 層）。",
+players:[
+{name:"三星",tag:"global",desc:"市佔約 30%，V-NAND 第九代已量產，QLC SSD 積極推進資料中心市場。"},
+{name:"SK 海力士 (Solidigm)",tag:"global",desc:"收購 Intel NAND 事業後市佔約 20%，企業級 SSD 競爭力提升。"},
+{name:"Kioxia / WD",tag:"global",desc:"合資晶圓廠，BiCS NAND 持續推進，市佔合計約 30%。"},
+{name:"美光",tag:"global",desc:"232 層 TLC NAND 量產，資料中心 SSD（Micron 9400）積極擴張。"},
+],
+tw:"SSD 控制器：慧榮（8299）、群聯（8284）；測試：京元電（2449）；設備：辛耘（3583）。旺宏（2337）有利基型 SLC NAND 產品。",
+ask:"AI 資料中心 SSD 需求對 NAND 廠的影響"},
+
+// ── 封裝 ──────────────────────────────────────────────
+cowos:{title:"CoWoS 先進封裝",
+tags:[{t:"TSMC獨有",c:"tw"},{t:"AI封裝核心",c:"global"}],
+what:"CoWoS（Chip on Wafer on Substrate）是 TSMC 研發的 2.5D 封裝，將 GPU Die 與 HBM 並排在中介層上，提供超高頻寬互連。AI GPU（H100/B200/MI300X）全數依賴 CoWoS。TSMC 持續擴充產能至 2026 年，中介層面積不斷放大。",
+players:[
+{name:"TSMC",tag:"tw",desc:"全球唯一大規模量產 CoWoS 廠。CoWoS-S/L/R 三路並進，每月產能從 2023 年約 1 萬片擴充至 2025 年底預計 3+ 萬片。"},
+{name:"日月光 (3711)",tag:"tw",desc:"TSMC CoWoS 轉包夥伴，承接後段 Substrate 組裝與測試，為 AI 封裝最大受益台廠。"},
+{name:"矽品 (2325)",tag:"tw",desc:"日月光旗下，承接 CoWoS 後段相關工序。"},
+],
+tw:"日月光投控（3711）、矽品（2325）、南電（8046，ABF 載板）、景碩（3189，載板）、京元電（2449，測試）、欣銓（3264，測試）。",
+ask:"CoWoS 產能瓶頸與台灣封測股的受益程度"},
+
+cowos_s:{title:"CoWoS-S（Silicon Interposer）",
+tags:[{t:"2.5D封裝",c:"global"},{t:"H100/H200主力",c:"tw"}],
+what:"CoWoS-S 使用「矽中介層（Silicon Interposer）」連接 GPU Die 與 HBM，是最成熟的 CoWoS 形式。矽中介層提供最高密度的互連線路（線寬 <1μm），訊號完整性最佳。缺點是矽中介層製造成本高、尺寸受限於矽晶圓大小（最大約 800mm²），不易做大。",
+players:[
+{name:"TSMC",tag:"tw",desc:"CoWoS-S 量產最早（2016 年），供應 NVIDIA H100/H200 所有 HBM3/3E 版本。產能最穩定，也是目前出貨量最大的 CoWoS 形式。"},
+{name:"日月光 (3711)",tag:"tw",desc:"後段 BGA 基板組裝，協助 TSMC 後段封裝轉包。"},
+],
+tw:"CoWoS-S 供應鏈台股：日月光（3711）、南電（8046）、景碩（3189）。目前 H100/H200 每顆 GPU 使用 6 顆 HBM3E，全部走 CoWoS-S 封裝。",
+ask:"CoWoS-S 和 CoWoS-L 的技術差異與適用場景"},
+
+cowos_l:{title:"CoWoS-L（Local Si Interposer）",
+tags:[{t:"2.5D封裝",c:"global"},{t:"B200/GB200主力",c:"tw"}],
+what:"CoWoS-L 在矽中介層基礎上加入「RDL（重佈線層）」橋接多個區塊，突破單一矽中介層的面積限制，可支援更大封裝尺寸（>1000mm²）。B200/GB200 Super 的 8 顆 HBM3E 配置需要更大面積，正是 CoWoS-L 的用武之地。成本高於 CoWoS-S，良率挑戰也更大。",
+players:[
+{name:"TSMC",tag:"tw",desc:"CoWoS-L 從 2024 年 H2 開始放量，主要供應 NVIDIA B200/B100 及 GB200 伺服器模組。2025 年成為產能擴充重點。"},
+{name:"日月光 (3711)",tag:"tw",desc:"CoWoS-L 後段基板組裝，受益 B200 出貨放量。"},
+],
+tw:"CoWoS-L 封裝需要更大 ABF 基板，南電（8046）受益更深；封裝良率挑戰使 TSMC 良率管理格外關鍵，景碩（3189）亦是供應商之一。",
+ask:"為什麼 B200 要從 CoWoS-S 升級到 CoWoS-L"},
+
+cowos_r:{title:"CoWoS-R（RDL Interposer）",
+tags:[{t:"2.5D封裝",c:"global"},{t:"成本優化路線",c:"tw"}],
+what:"CoWoS-R 完全捨棄矽中介層，改用 RDL（Redistribution Layer，即 Fan-Out 技術）作為互連層，材料成本更低，且面板級製造（FOPLP）兼容性高。互連密度低於 CoWoS-S/L，但對於部分不需最高頻寬的 ASIC 晶片（如 Google TPU、Amazon Trainium）性價比更高。",
+players:[
+{name:"TSMC",tag:"tw",desc:"CoWoS-R 為滿足 CSP（雲端客戶）自研 ASIC 需求而開發，預計 2025-2026 年量產。"},
+{name:"日月光 (3711)",tag:"tw",desc:"CoWoS-R 與 Fan-Out 技術相近，日月光 FOCoS 技術形成競爭關係。"},
+{name:"三星 / Amkor",tag:"global",desc:"提供類似 RDL Interposer 封裝方案，與 TSMC CoWoS-R 競爭 ASIC 客戶。"},
+],
+tw:"CoWoS-R 量產後若搶下 Google/Amazon ASIC 訂單，對 PCB 載板廠（南電、景碩）與測試廠（欣銓、京元電）均有正面效益。",
+ask:"CoWoS-R 與 FOPLP 的技術路線是否會整合"},
+
+foplp:{title:"FOPLP / 玻璃載板 TGV",
+tags:[{t:"下世代封裝",c:"global"},{t:"2027-2028量產",c:"tw"}],
+what:"FOPLP（Fan-Out Panel Level Packaging）將封裝載體從圓形晶圓改為矩形大面板（510×515mm），提高面積利用率、降低成本。玻璃載板（Glass Substrate）利用 TGV（Through-Glass Via）取代 ABF 載板，具更佳訊號完整性與翹曲控制。市場共識：Intel 需求最確定，量產在 2026-2028 年；TSMC CoPoS 在 2028+ 年。",
+players:[
+{name:"Intel",tag:"global",desc:"最積極推動玻璃載板的廠商，目標 2026-2027 年在 CPU/GPU 導入，為近期最確定需求來源。"},
+{name:"TSMC",tag:"tw",desc:"CoPoS（Chip on Panel on Substrate）開發中，預計 2028-2029 年量產，仍屬中長期。"},
+{name:"鈦昇 (8027)",tag:"tw",desc:"TGV 雷射鑽孔設備廠，玻璃載板製程最關鍵設備之一，是市場最純粹的受益標的。"},
+{name:"東捷 (8064)",tag:"tw",desc:"玻璃基板切割、搬運設備，FOPLP 量產不可或缺的設備廠。"},
+{name:"雷科 (6207)",tag:"tw",desc:"雷射加工設備，可切入 FOPLP/玻璃載板雷射製程設備供應。"},
+],
+tw:"設備端：鈦昇（8027）、東捷（8064）、雷科（6207）。面板廠切入：群創（3481）布局 FOPLP 面板。時程風險高，建議以 Intel 採購進度作為觀察指標。",
+ask:"玻璃載板 TGV 的量產進度與台股主要受益標的"},
+
+soic:{title:"SoIC 系統整合晶片",
+tags:[{t:"3D堆疊",c:"tw"},{t:"TSMC自有技術",c:"tw"}],
+what:"SoIC（System on Integrated Chips）是 TSMC 的 3D IC 技術，直接將兩顆 Die 面對面（Face-to-Face）或背對正（Face-to-Back）堆疊，互連密度遠高於 CoWoS（可達每 mm² 數千個連接點）。主要用於邏輯晶片與記憶體的極高速整合，如 TSMC 內部測試的 AI 晶片架構。",
+players:[
+{name:"TSMC",tag:"tw",desc:"SoIC 自研技術，有 SoIC-XS（極小 bump pitch）與 SoIC-X（標準）兩個版本，目前以小量客制化為主，廣泛量產仍在推進中。"},
+],
+tw:"SoIC 目前仍屬少量客制，台股尚無直接純標的；對 TSMC 本身有長期差異化意義，可搭配 CoWoS 題材一起觀察。",
+ask:"SoIC 和 CoWoS 在 3D 封裝路線上的差異"},
+
+// ── 設備 ──────────────────────────────────────────────
+euv:{title:"EUV 極紫外光微影",
+tags:[{t:"先進製程關鍵",c:"global"},{t:"ASML壟斷",c:"global"}],
+what:"EUV（Extreme Ultraviolet）使用 13.5nm 波長，是 7nm 以下先進製程的必要設備，每台造價超 1.5 億美元。High-NA EUV（0.55 NA）為次世代，可支援 2nm 以下，目前 Intel 已收到首批 High-NA 機台。全球唯 ASML 可生產，形成絕對壟斷。",
+players:[
+{name:"ASML",tag:"global",desc:"全球唯一 EUV 設備商，High-NA EUV 已交付 Intel，TSMC/三星 High-NA 規劃中。受美中科技戰影響，禁止對中國出口 EUV 設備。"},
+{name:"家登 (3680)",tag:"tw",desc:"EUV 光罩傳送盒（FOUP/SMIF Pod）台灣龍頭，也跨入 EUV 光罩盒，為台股最純粹的 EUV 受益標的。"},
+{name:"弘塑 (3131)",tag:"tw",desc:"半導體濕製程設備，EUV 相關晶圓清洗耗材設備供應商。"},
+],
+tw:"家登（3680）是台股 EUV 最佳標的，光罩盒進入 TSMC/三星供應鏈；崇越（5434）代理半導體材料；漢微科為光罩廠。",
+ask:"家登在 EUV 光罩盒的競爭地位與護城河"},
+
+aoi:{title:"AOI / 半導體檢測設備",
+tags:[{t:"設備",c:"global"},{t:"良率管理",c:"global"}],
+what:"AOI（Automated Optical Inspection）是晶圓製造不可或缺的良率管理工具，透過光學系統掃描晶圓表面缺陷。先進製程每增加一層 EUV，就需要更多 AOI 檢測步驟，帶動設備需求持續增長。",
+players:[
+{name:"KLA (美)",tag:"global",desc:"全球半導體缺陷檢測設備龍頭，市佔超 50%，技術壟斷力強。"},
+{name:"AMAT (Applied Materials)",tag:"global",desc:"晶圓製造設備全線供應，AOI 為其次要業務。"},
+{name:"旭東機械 (旭東,台)",tag:"tw",desc:"IC 封裝後段 AOI 設備，切入 CoWoS/先進封裝視覺檢測。"},
+],
+tw:"台股 AOI 相關：旭東機械、精測電子（6510，探針卡與測試介面）、台灣日立（高真空設備）。前道 AOI 仍以 KLA 等外資為主，台廠在後段封裝 AOI 有切入機會。",
+ask:"半導體 AOI 設備市場的台灣機會"},
+
+probe:{title:"探針卡 / 半導體測試",
+tags:[{t:"設備",c:"global"},{t:"測試",c:"global"}],
+what:"探針卡（Probe Card）用於晶圓測試階段，在封裝前對每顆 Die 進行電性測試。先進製程與 HBM 測試複雜度提升，帶動高階探針卡（MEMS、垂直式）需求。",
+players:[
+{name:"FormFactor (美)",tag:"global",desc:"全球探針卡龍頭，MEMS 探針卡市佔最高，供應 TSMC/三星測試線。"},
+{name:"精測電子 (6510)",tag:"tw",desc:"台灣最大探針卡廠，切入先進製程與 HBM 測試探針卡，為台股直接標的。"},
+{name:"旺矽 (6223)",tag:"tw",desc:"探針卡與測試介面，聚焦中高階市場。"},
+],
+tw:"精測電子（6510）、旺矽（6223）為台股直接標的；後段測試廠：京元電（2449）、欣銓（3264）、矽格（6257）。",
+ask:"精測電子在 HBM 探針卡市場的機會"},
+
+// ── IC 設計 ──────────────────────────────────────────────
+pmic:{title:"PMIC 電源管理 IC",
+tags:[{t:"IC設計",c:"tw"},{t:"AI伺服器",c:"global"}],
+what:"PMIC（Power Management IC）負責管理電壓調節、充放電控制、電源序列等功能，是每個電子系統的必備元件。AI 伺服器功耗激增（單顆 GPU 超 700W），對高電流、快速暫態響應的 VR（電壓調節器）和 PWM 控制 IC 需求大幅提升。車用 PMIC 亦受 EV/ADAS 帶動快速成長。",
+players:[
+{name:"德儀 (TI)",tag:"global",desc:"全球類比與 PMIC 龍頭，伺服器電源管理市佔最高，車用 PMIC 亦是主力。"},
+{name:"英飛凌 (Infineon)",tag:"global",desc:"車用 PMIC 與功率元件市佔高，GaN 充電 IC 亦布局。"},
+{name:"茂達 (6138)",tag:"tw",desc:"台灣伺服器 PMIC 設計廠，AI 伺服器電源 IC 受益，為台股 PMIC 代表標的。"},
+{name:"偉詮電 (2436)",tag:"tw",desc:"Type-C PD 控制器、USB 電源管理 IC，快充生態系受益。"},
+{name:"立錡 (6286)",tag:"tw",desc:"快充 IC、電源管理 IC，與偉詮競爭 USB PD 市場。"},
+],
+tw:"AI 伺服器 PMIC：茂達（6138）、芯科（6451）。快充/Type-C：偉詮電（2436）、立錡（6286）。車用 PMIC：尚無台廠規模量產，以代理為主。",
+ask:"AI 伺服器 PMIC 需求爆發的台灣受益股"},
+
+ai_asic:{title:"AI ASIC 自研晶片",
+tags:[{t:"IC設計",c:"global"},{t:"去 NVIDIA 化",c:"global"}],
+what:"AI ASIC（Application Specific IC）是 Google（TPU）、Amazon（Trainium/Inferentia）、Meta（MTIA）等雲端巨頭自研的 AI 加速器，針對各自工作負載客制優化，性價比優於通用 GPU。TSMC 為主要代工商，台灣封測廠（CoWoS/SoIC）為供應鏈受益方。",
+players:[
+{name:"Google TPU v5/v6",tag:"global",desc:"訓練與推論並重，採用 CoWoS-R 封裝，TSMC 4nm 製程。"},
+{name:"Amazon Trainium 2",tag:"global",desc:"訓練用 ASIC，採用 TSMC 3nm，為 AWS 內部大模型訓練主力。"},
+{name:"Meta MTIA 2",tag:"global",desc:"推論 ASIC，聚焦社群推薦系統，功耗效率優先。"},
+{name:"台積電",tag:"tw",desc:"全球 AI ASIC 幾乎全部由 TSMC 代工，3nm/2nm 為主力製程節點。"},
+],
+tw:"TSMC（晶圓代工）、日月光（3711，封裝）、矽品（2325）、欣銓（3264）、京元電（2449）。AI ASIC 成長隱含 TSMC CoWoS 需求放大。",
+ask:"AI ASIC 和 NVIDIA GPU 的競爭格局"},
+
+serdes:{title:"SerDes / 高速傳輸 IC",
+tags:[{t:"IC設計",c:"tw"},{t:"高速介面",c:"global"}],
+what:"SerDes（Serializer/Deserializer）是高速數位介面的核心電路，負責將並列信號轉為串列（以減少走線數）並在接收端還原。廣泛應用於 PCIe 5.0/6.0、CXL、112G/224G 乙太網路。AI 時代資料中心互連速度需求暴增，SerDes IP 與 IC 市場隨之擴大。",
+players:[
+{name:"博通 (Broadcom)",tag:"global",desc:"高速 SerDes IP 授權與 IC 龍頭，224G SerDes 已量產，供應 AI 資料中心交換器。"},
+{name:"Marvell",tag:"global",desc:"112G/224G SerDes IP，整合於 AI 網路 IC 中。"},
+{name:"M31 (6643)",tag:"tw",desc:"台灣 SerDes IP 設計公司，授權給 IC 設計廠使用，為台股 SerDes IP 代表。"},
+],
+tw:"M31（6643）為台灣 IP 公司，提供 SerDes 等高速介面 IP 授權。其他：創意（3443，TSMC 設計服務）可協助客戶整合 SerDes 設計。",
+ask:"SerDes 224G 在 AI 資料中心的應用與台股受益"},
+
+wifi7:{title:"WiFi 7 / 無線網路 IC",
+tags:[{t:"IC設計",c:"tw"},{t:"消費電子/企業",c:"global"}],
+what:"WiFi 7（802.11be）最高速率達 46 Gbps，支援 Multi-Link Operation（MLO），延遲大幅降低，適合 AR/VR、遊戲、企業無線網路。2024 年開始滲透高階路由器與手機，預計 2025-2026 年快速普及。",
+players:[
+{name:"博通 (Broadcom)",tag:"global",desc:"企業級 WiFi 7 AP 晶片龍頭，供應 Cisco、Aruba 等。"},
+{name:"聯發科 (2454)",tag:"tw",desc:"消費級 WiFi 7 路由器晶片市佔最高，Filogic 系列深入中低階路由器市場。"},
+{name:"瑞昱 (2379)",tag:"tw",desc:"消費級 WiFi 7 NIC 與路由器晶片，PC 網卡市佔高。"},
+],
+tw:"聯發科（2454）、瑞昱（2379）為台股主要受益；凌通（4952）切入 WiFi 6E/7 IoT 模組。",
+ask:"WiFi 7 滲透率時程與聯發科的市場地位"},
+
+pcie:{title:"PCIe 5.0 / CXL 介面",
+tags:[{t:"IC設計",c:"global"},{t:"AI伺服器互連",c:"global"}],
+what:"PCIe 5.0 頻寬達 32 GT/s（較 PCIe 4.0 倍增），是 AI 伺服器 GPU/FPGA 連接主機板的主流介面。CXL（Compute Express Link）基於 PCIe 物理層，新增快取一致性協定，允許 CPU 與加速器/記憶體共享快取，是 AI 時代重要的記憶體擴充技術。",
+players:[
+{name:"Intel",tag:"global",desc:"CXL 規範主要制定者，Xeon 伺服器平台積極推廣 CXL 記憶體擴充。"},
+{name:"祥碩 (5269)",tag:"tw",desc:"PCIe/USB 介面 IC 設計，PCIe Switch IC 為台廠中競爭力最強的標的。"},
+{name:"譜瑞 (4966)",tag:"tw",desc:"PCIe Retimer、DisplayPort IC，AI 伺服器 PCIe 5.0 訊號整形 IC 受益。"},
+],
+tw:"祥碩（5269）PCIe Switch、譜瑞（4966）Retimer、威鋒（6289）USB 控制器。AI 伺服器每台需多顆 PCIe Switch/Retimer，需求受惠明顯。",
+ask:"祥碩在 PCIe 5.0 市場的競爭地位"},
+
+// ── 光通訊 ──────────────────────────────────────────────
+cpo:{title:"CPO 共封裝光學",
+tags:[{t:"光通訊",c:"global"},{t:"AI資料中心",c:"global"}],
+what:"CPO（Co-Packaged Optics）將光引擎直接封裝在交換器晶片旁，取代傳統插拔式光模組，降低功耗 30-40%、縮短延遲。800G/1.6T 時代因功耗壁壘，CPO 被視為必然趨勢，預計 2025-2027 年進入規模量產。",
+players:[
+{name:"Intel (光引擎)",tag:"global",desc:"矽光子技術領先，CPO 光引擎主要供應商，與博通交換器 IC 整合。"},
+{name:"博通 (Broadcom)",tag:"global",desc:"交換器 ASIC 龍頭，積極推動 CPO 整合至 Tomahawk/Trident 平台。"},
+{name:"頎邦 (6147)",tag:"tw",desc:"CPO 光引擎封裝測試，金凸塊（Gold Bump）Flip Chip 為關鍵差異化技術。"},
+{name:"南茂 (8150)",tag:"tw",desc:"CPO 封裝測試受益，與頎邦競爭光引擎 Flip Chip 封裝訂單。"},
+{name:"光洋科 (1785)",tag:"tw",desc:"光學材料與零組件，切入 CPO 光路材料供應。"},
+],
+tw:"頎邦（6147）、南茂（8150）封裝直接受益；光洋科（1785）材料端；欣銓（3264）測試端。注意 CPO 量產時程是否如期。",
+ask:"CPO 何時會大規模取代可插拔光模組"},
+
+sph:{title:"矽光子 Silicon Photonics",
+tags:[{t:"光通訊",c:"global"},{t:"CPO核心技術",c:"global"}],
+what:"矽光子利用 CMOS 製程在矽基板上製作光波導、調變器、光偵測器等光學元件，可以與電子電路整合在同一晶片（PIC）。成本低、可大規模量產，是 CPO 光引擎與高速光模組的主流技術路線。相較 InP，矽光子製程與半導體廠相容，但調變效率稍遜。",
+players:[
+{name:"Intel",tag:"global",desc:"矽光子龍頭，800G 矽光子光模組商業化，CPO 光引擎主力技術。"},
+{name:"TSMC",tag:"tw",desc:"提供矽光子晶圓代工（SiPh PDK），客戶包含 Ranovus、Ayar Labs 等新創。"},
+{name:"聯亞 (3081)",tag:"tw",desc:"化合物半導體（InP/GaAs），間接競爭矽光子應用市場。"},
+],
+tw:"TSMC 矽光子代工受益（整體 AI 業務的一部分）；頎邦（6147）、南茂（8150）封裝矽光子 PIC；光鋐（4956）光模組 IC。",
+ask:"矽光子和 InP 在高速光通訊的競爭格局"},
+
+tfln:{title:"TFLN 薄膜鈮酸鋰",
+tags:[{t:"新型光調變",c:"global"},{t:"1.6T時代",c:"global"}],
+what:"TFLN（Thin Film Lithium Niobate）的電光調變頻寬可達 100GHz+，插入損耗極低，遠優於矽光子（~30GHz）。適合 800G/1.6T 超高速光模組的調變器，被視為下一代光通訊骨幹技術。目前產業化仍在早期，晶圓供應是瓶頸。",
+players:[
+{name:"HyperLight（美）",tag:"global",desc:"TFLN 晶片設計新創，DARPA 支持，調變器技術全球頂尖。"},
+{name:"Lumentum / Coherent",tag:"global",desc:"傳統光通訊大廠，積極整合 TFLN 調變器至高速光模組產品線。"},
+{name:"SHOWA DENKO（日）",tag:"global",desc:"鈮酸鋰晶圓主要供應商，TFLN 基板材料。"},
+],
+tw:"台股目前無純 TFLN 標的，屬中期觀察題材。若頎邦（6147）或南茂（8150）切入 TFLN 晶片封裝，為最可能的台廠受益途徑。",
+ask:"TFLN 和矽光子的技術差異與取代可能性"},
+
+inp:{title:"InP 磷化銦",
+tags:[{t:"化合物半導體",c:"global"},{t:"高速雷射",c:"global"}],
+what:"InP（磷化銦）具備直接帶隙特性，是製作高速雷射（EML、DFB）的最佳材料，廣泛用於長距離光纖通訊與高速光模組。相較矽光子，InP 光源效率更高，但製程獨立、成本較高，難以與 CMOS 整合。",
+players:[
+{name:"II-VI / Coherent",tag:"global",desc:"全球最大 InP 晶圓與光元件廠，供應 EML 雷射給各大光模組廠。"},
+{name:"Lumentum",tag:"global",desc:"InP 雷射模組大廠，供應 400G/800G 高速光模組的光源。"},
+{name:"聯亞 (3081)",tag:"tw",desc:"台灣最重要的 InP/GaAs 化合物半導體廠，EML 雷射晶粒供應商，為台股直接標的。"},
+{name:"全新 (2455)",tag:"tw",desc:"化合物半導體磊晶廠，InP 相關磊晶片供應。"},
+],
+tw:"聯亞（3081）為台股 InP 最純粹標的；全新（2455）磊晶受益。800G/1.6T 光模組普及帶動 InP 雷射需求長期成長。",
+ask:"聯亞在 InP 高速雷射的競爭地位"},
+
+// ── 電源/散熱 ──────────────────────────────────────────────
+liquid_cool:{title:"液冷散熱",
+tags:[{t:"AI伺服器",c:"global"},{t:"散熱",c:"global"}],
+what:"AI GPU 功耗突破 700W（B200 達 1000W），傳統氣冷無法應對，液冷成為必要技術。主要形式：直接液冷（DLC，冷水板貼附 CPU/GPU）、浸沒式冷卻（整台伺服器泡在電子氟化液中）。預計 2025-2027 年在 AI 資料中心液冷滲透率突破 30%。",
+players:[
+{name:"Vertiv（美）",tag:"global",desc:"全球資料中心熱管理與電源龍頭，液冷 CDU 市佔高。"},
+{name:"CoolIT / Asetek",tag:"global",desc:"DLC 冷板技術領先，供應超算中心。"},
+{name:"雙鴻 (3324)",tag:"tw",desc:"液冷散熱方案廠商，CDU 冷卻分配單元，為台股液冷最純粹標的。"},
+{name:"奇鋐 (3017)",tag:"tw",desc:"均溫板 VC 與熱管，AI 伺服器散熱受益，也布局液冷。"},
+{name:"建準 (2421)",tag:"tw",desc:"散熱風扇與液冷泵，AI 伺服器散熱零件供應。"},
+],
+tw:"液冷台股：雙鴻（3324，CDU）、奇鋐（3017，VC/熱管）、台灣日立（真空泵）、建準（2421，泵/風扇）。散熱板：超眾（6230）。",
+ask:"台灣液冷散熱廠商的競爭實力比較"},
+
+bbu:{title:"BBU / 資料中心電源",
+tags:[{t:"電源",c:"global"},{t:"AI資料中心",c:"global"}],
+what:"BBU（Battery Backup Unit）是資料中心 UPS 的模組化電池備援單元，AI 資料中心規模擴張帶動 BBU 需求暴增。同時，AI 伺服器機架功率從 10-20kW 提升至 100kW+，帶動 PSU（電源供應器）與 CRPS（通用電源規格）升級。",
+players:[
+{name:"台達電 (2308)",tag:"tw",desc:"全球伺服器電源供應器（PSU）市佔第一，AI 伺服器高瓦數 PSU 直接受益，也供應 UPS/BBU 模組。"},
+{name:"光寶科 (2301)",tag:"tw",desc:"伺服器 PSU 第二大台廠，AI 伺服器電源受益，同時有 LED 照明與車用業務。"},
+{name:"Vertiv",tag:"global",desc:"資料中心 UPS 與 PDU 龍頭，BBU 系統解決方案廠。"},
+],
+tw:"台達電（2308）為台股 BBU/PSU 最核心受益股；光寶科（2301）次之；碩天（3515）UPS 設備廠。",
+ask:"台達電在 AI 伺服器電源的市場地位"},
+
+// ── CPO 子節點 ──────────────────────────────────────────────
+optical_engine:{title:"光引擎（CPO 核心）",
+tags:[{t:"光通訊",c:"global"},{t:"CPO子系統",c:"global"}],
+what:"光引擎（Optical Engine）是 CPO 的核心子模組，將雷射光源、調變器、光偵測器整合於同一封裝，提供電-光-電轉換功能。通常採用矽光子 PIC 製程，並透過 Flip Chip 與 Driver IC 結合。是 CPO 中技術門檻最高、附加價值最高的元件。",
+players:[
+{name:"Intel",tag:"global",desc:"矽光子光引擎主要量產商，800G CPO 光引擎已送樣博通。"},
+{name:"Ayar Labs（新創）",tag:"global",desc:"片上光連接（TeraPHY）技術，目標直接整合光引擎至 GPU Die 旁。"},
+{name:"頎邦 (6147)",tag:"tw",desc:"光引擎 Flip Chip 封裝廠，金凸塊（Gold Bump）技術為差異化，是目前台灣光引擎封裝最重要的廠商。"},
+],
+tw:"頎邦（6147）為台股光引擎封裝直接標的，同時也做半導體 COF 封裝（面板驅動 IC），AI 題材為新成長驅動力。",
+ask:"頎邦在 CPO 光引擎封裝的技術壁壘"},
+
+// ── 網通 ──────────────────────────────────────────────
+ethernet_ai:{title:"高速乙太網路（400G/800G/1.6T）",
+tags:[{t:"網通",c:"global"},{t:"AI叢集互連",c:"global"}],
+what:"AI GPU 叢集規模擴大，節點間互連從 100GbE 升級至 400G/800G，下一步 1.6T（1.6 Tbps）已在規劃中。Ultra Ethernet Consortium（UEC）推動低延遲乙太網路標準，目標取代部分 InfiniBand 應用場景。",
+players:[
+{name:"博通 (Broadcom)",tag:"global",desc:"AI 乙太網路交換器 ASIC（Tomahawk 5/6）全球龍頭，800GbE 市佔超 80%。"},
+{name:"Marvell",tag:"global",desc:"100G/400G 乙太網路 PHY 與交換器 IC，次要市場補位。"},
+{name:"智邦 (2345)",tag:"tw",desc:"台灣最大乙太網路交換器 ODM 廠，AI 資料中心 400G/800G 交換器受益最深。"},
+{name:"中磊 (5388)",tag:"tw",desc:"網通設備 ODM，AI 資料中心交換器訂單增加。"},
+],
+tw:"智邦（2345）為台股 AI 網通最大受益股；中磊（5388）、啟碁（6285）次之；博通 IC 代理：耕興（6146）。",
+ask:"智邦在 AI 資料中心網通設備的競爭地位"},
+
+infiniband:{title:"InfiniBand",
+tags:[{t:"AI叢集互連",c:"global"},{t:"高效能運算",c:"global"}],
+what:"InfiniBand 是高效能運算（HPC）與 AI 訓練叢集最常用的互連技術，延遲遠低於乙太網路，RDMA 支援使 GPU 間通訊效率最高。NVIDIA 收購 Mellanox 後全面掌控 InfiniBand 供應鏈。HDR（200Gbps）→ NDR（400Gbps）→ XDR（800Gbps）世代快速演進。",
+players:[
+{name:"NVIDIA (Mellanox)",tag:"global",desc:"InfiniBand 交換器與 NIC 全球壟斷廠，NDR 400G 為 AI 叢集主流，XDR 800G 已規劃中。"},
+{name:"台廠",tag:"tw",desc:"InfiniBand 設備由 NVIDIA 自有供應鏈為主，台廠主要在 PCB、連接器等次級供應鏈受益。"},
+],
+tw:"InfiniBand 台灣直接廠商少，但嘉澤（3533）高速連接器、台光電（2383）高頻 PCB 為間接受益供應商。",
+ask:"InfiniBand 和乙太網路在 AI 叢集的競爭格局"},
+
+// ── 被動元件 ──────────────────────────────────────────────
+mlcc:{title:"MLCC 多層陶瓷電容",
+tags:[{t:"被動元件",c:"cn"},{t:"AI/車用雙驅動",c:"global"}],
+what:"MLCC（Multi-Layer Ceramic Capacitor）是用量最大的被動元件，AI 伺服器與車用電子帶動高階規格需求。AI GPU 板每張使用數千顆高規 MLCC；車用 MLCC 需通過 AEC-Q200，耐溫 -55°C～+150°C。",
+players:[
+{name:"村田 (Murata)",tag:"global",desc:"全球市佔第一（~30%），高階車用與 AI 伺服器 MLCC 定價能力最強。"},
+{name:"TDK / Taiyo Yuden",tag:"global",desc:"日系二線，在通訊與消費性電子有穩固地位。"},
+{name:"國巨 (2327)",tag:"tw",desc:"台灣 MLCC 龍頭，透過併購補強高階品，積極切入車用市場；亦涵蓋電阻、電感等被動元件。"},
+{name:"華新科 (2492)",tag:"tw",desc:"台灣二線 MLCC，聚焦工業與車用，毛利率穩定。"},
+],
+tw:"國巨（2327）、華新科（2492）為主要台股標的。觀察車用認證進度與 AI 伺服器 MLCC 規格拉升是否帶動 ASP 成長。",
+ask:"國巨在車用 MLCC 的競爭定位與成長動能"},
+
+resistor:{title:"電阻（厚膜/薄膜/精密）",
+tags:[{t:"被動元件",c:"cn"},{t:"工業/車用",c:"global"}],
+what:"電阻為最基礎被動元件，依製程分厚膜（低精度、低成本）、薄膜（高精度、低溫漂）、精密繞線電阻。車用與工業應用對精密度與可靠性要求高，薄膜與精密電阻 ASP 遠高於標準品。",
+players:[
+{name:"國巨 (2327)",tag:"tw",desc:"台灣電阻龍頭（Yageo），全球市佔前三，跨越厚膜至精密電阻。"},
+{name:"旺詮 (2437)",tag:"tw",desc:"電阻專業廠，厚膜電阻晶片為主，出貨量大。"},
+{name:"光頡 (2340)",tag:"tw",desc:"電阻網路與整合性被動元件，切入利基市場。"},
+],
+tw:"國巨（2327）、旺詮（2437）、光頡（2340）。電阻毛利率偏低，重點觀察車用精密電阻 ASP 提升空間。",
+ask:"精密電阻在車用 ADAS 的應用與台廠機會"},
+
+inductor:{title:"電感（功率/高頻）",
+tags:[{t:"被動元件",c:"cn"},{t:"電源管理",c:"global"}],
+what:"電感用於電源濾波與能量儲存，AI 伺服器的高電流電壓調節器（VR）需要大量功率電感。一體成型電感因體積小、效率高，成為 AI 加速器電源模組主流選擇。",
+players:[
+{name:"太陽誘電 (Taiyo Yuden)",tag:"global",desc:"高頻電感龍頭，通訊設備與車用應用市佔高。"},
+{name:"奇力新 (2456)",tag:"tw",desc:"台灣功率電感龍頭，一體成型電感受益 AI 伺服器 VR 需求，為台股直接標的。"},
+{name:"乾坤 (2452)",tag:"tw",desc:"電感與功率模組，AI 伺服器電源電感受益。"},
+],
+tw:"奇力新（2456）、乾坤（2452）為台股主要電感受益股；AI 伺服器電感需求顯著，ASP 拉升趨勢明確。",
+ask:"奇力新在 AI 伺服器功率電感的成長機會"},
+
+// ── PCB / 載板 ──────────────────────────────────────────────
+abf:{title:"ABF 載板（IC Substrate）",
+tags:[{t:"IC載板",c:"tw"},{t:"AI GPU必需品",c:"global"}],
+what:"ABF（Ajinomoto Build-up Film）載板是 CPU/GPU 的核心封裝基板，AI GPU 封裝面積持續擴大（H100 基板面積約 3000mm²），ABF 載板供不應求。ABF 製程複雜、良率要求高，台日韓廠瓜分市場。",
+players:[
+{name:"欣興 (3037)",tag:"tw",desc:"台灣最大 ABF 載板廠，AI GPU、HPC CPU 基板主力供應商，受益最深。"},
+{name:"南電 (8046)",tag:"tw",desc:"高階 ABF 載板，CoWoS 封裝用基板供應，切入 HBM 封裝基板。"},
+{name:"景碩 (3189)",tag:"tw",desc:"ABF 載板，切入 AI 伺服器 GPU 基板市場。"},
+{name:"揖斯優 (Ibiden,日)",tag:"global",desc:"ABF 載板全球最大廠，TSMC CoWoS 主要基板供應商之一。"},
+],
+tw:"欣興（3037）、南電（8046）、景碩（3189）為台股 ABF 三強；動態電流（3210）ABF 相關材料。AI GPU 基板尺寸持續擴大是最強驅動力。",
+ask:"欣興在 AI GPU ABF 載板的競爭地位"},
+
+hf_pcb:{title:"高頻高速 PCB",
+tags:[{t:"PCB",c:"tw"},{t:"AI/網通",c:"global"}],
+what:"高頻高速 PCB 使用低損耗基材（如 PTFE、低 Dk/Df 材料），適合 5G mmWave、AI 資料中心 400G/800G 乙太網路、雷達等應用。AI 伺服器 Back Plane 與高速交換器 PCB 為主要需求來源。",
+players:[
+{name:"台光電 (2383)",tag:"tw",desc:"高頻 PCB 基材（銅箔基板）龍頭，AI 資料中心高速板材供應，毛利率遠高於標準品。"},
+{name:"聯茂 (6213)",tag:"tw",desc:"高頻高速銅箔基板廠，AI 伺服器與 5G 設備材料受益。"},
+{name:"滬士電 (中,1:tw)",tag:"tw",desc:"高速 PCB 製造，AI 伺服器 Back Plane 受益。"},
+],
+tw:"台光電（2383）、聯茂（6213）為高頻 PCB 材料台股標的；PCB 製造：燿華（2367）、定穎（3282）。",
+ask:"台光電高頻基材在 AI 伺服器 PCB 的應用"},
+
+// ── 電動車 ──────────────────────────────────────────────
+sic:{title:"SiC 碳化矽功率半導體",
+tags:[{t:"電動車",c:"global"},{t:"功率元件",c:"global"}],
+what:"SiC MOSFET 具備高耐壓、高頻、低損耗，是電動車逆變器的關鍵元件，相比矽 IGBT 可提升整車效率 5-10%。Tesla Model 3 率先大規模採用後各大車廠跟進，2024 年市場進入供過於求修正，但長期成長確定。",
+players:[
+{name:"意法半導體 (ST)",tag:"global",desc:"車用 SiC MOSFET 最大供應商，主供 Tesla、BYD，市佔約 30%。"},
+{name:"英飛凌 (Infineon)",tag:"global",desc:"歐洲功率半導體龍頭，SiC 市佔持續提升，車廠關係穩固。"},
+{name:"Wolfspeed（美）",tag:"global",desc:"SiC 磊晶晶圓龍頭，財務壓力大，產能擴充進度落後，2024 年股價大跌。"},
+{name:"漢磊 (3707)",tag:"tw",desc:"台灣 SiC 磊晶與晶圓代工，受益本土供應鏈建立需求，規模仍小。"},
+{name:"嘉晶 (3016)",tag:"tw",desc:"SiC 磊晶片，漢磊的上游材料供應商。"},
+],
+tw:"漢磊（3707）、嘉晶（3016）為台股 SiC 直接標的，規模仍小。台積電有 SiC 代工能力但非主力。茂矽（2342）間接受益。",
+ask:"SiC 車用功率半導體的競爭格局與台廠機會"},
+
+gan:{title:"GaN 氮化鎵功率元件",
+tags:[{t:"功率半導體",c:"global"},{t:"快充/伺服器電源",c:"global"}],
+what:"GaN 具備高頻、高效率、體積小等優勢，已在消費性充電器（65W/100W/200W GaN 快充）普及，高壓 GaN（650V）逐步切入車載 OBC 與資料中心電源。相較 SiC，GaN 成本更低但電壓上限稍低（一般 ≤650V）。",
+players:[
+{name:"Navitas / GaN Systems",tag:"global",desc:"GaN 快充 IC 新創，廣泛供應手機快充市場（Xiaomi/Apple 充電器）。"},
+{name:"英飛凌 (Infineon)",tag:"global",desc:"CoolGaN 系列切入工業與車載，持續擴大市場。"},
+{name:"致新 (8081)",tag:"tw",desc:"GaN 充電控制 IC，切入快充市場，為台股 GaN 代表性標的。"},
+{name:"台半 (5425)",tag:"tw",desc:"GaN 功率元件製造，MOSFET 與 GaN 晶片並行。"},
+],
+tw:"致新（8081）GaN 控制 IC；台半（5425）GaN 元件製造；漢磊（3707）有 GaN 磊晶代工。快充市場已成熟，觀察車載 OBC 認證進度。",
+ask:"GaN 快充 IC 和 SiC 車用功率的市場分工"},
+
+// ── 機器人 ──────────────────────────────────────────────
+humanoid:{title:"人形機器人",
+tags:[{t:"機器人",c:"global"},{t:"2025-2030長期題材",c:"global"}],
+what:"人形機器人（Humanoid Robot）以雙足行走、雙手操作為特徵，目標替代工廠重複性人力。Tesla Optimus、Figure AI、Unitree 掀起熱潮。核心零件：諧波減速機、滾珠螺桿/線性致動器、力矩感測器、視覺系統。量產時程不確定性仍高，2025-2028 年為關鍵觀察期。",
+players:[
+{name:"Tesla Optimus",tag:"global",desc:"Elon Musk 目標 2025 年工廠量產，高度垂直整合，零件外部採購仍有不確定性。"},
+{name:"Figure AI",tag:"global",desc:"獲 OpenAI/Microsoft 投資，BMW 工廠試用，商業化進度最快的新創之一。"},
+{name:"宇樹 Unitree（中）",tag:"cn",desc:"成本最低，G1 機器人量產中，出口受美國貿易限制風險。"},
+{name:"上銀 (2049)",tag:"tw",desc:"台灣滾珠螺桿、線性滑軌龍頭，人形機器人線性致動器最大潛在台灣受益廠。"},
+{name:"台達電 (2308)",tag:"tw",desc:"伺服馬達與驅動器，機器人動力系統關鍵零件。"},
+],
+tw:"上銀（2049）滾珠螺桿/線性滑軌；台達電（2308）伺服馬達；所羅門（2359）視覺系統；研華（2395）工控平台；台灣均豪（均豪）感測器。量產時程為最大風險。",
+ask:"人形機器人台灣供應鏈完整盤點"},
+
+reducer:{title:"減速機（諧波/RV/行星）",
+tags:[{t:"機器人關鍵零件",c:"global"},{t:"精密傳動",c:"global"}],
+what:"減速機是機器人關節的核心元件，將馬達高轉速降低、扭矩放大。諧波減速機（Harmonic Drive）精度最高、體積最小，適合協作機器人與人形機器人手臂；RV 減速機（Rotate Vector）剛性更強，適合重負載工業機器人；行星減速機成本低、應用廣。",
+players:[
+{name:"哈默納科 (Harmonic Drive,日)",tag:"global",desc:"諧波減速機全球龍頭，市佔超 60%，供應 ABB、Fanuc 等機器人廠，人形機器人試樣需求大增。"},
+{name:"納博特斯克 (Nabtesco,日)",tag:"global",desc:"RV 減速機龍頭，供應 Fanuc、安川重型工業機器人。"},
+{name:"上銀 (2049)",tag:"tw",desc:"台灣唯一切入機器人滾珠螺桿（線性致動器替代品）的廠商，與諧波減速機差異化競爭，人形機器人線性致動器受益。"},
+],
+tw:"台廠目前無法直接生產高精度諧波/RV 減速機，上銀（2049）滾珠螺桿為最佳替代受益標的；東元（1504）馬達與傳動系統間接相關。",
+ask:"諧波減速機的技術壁壘與台廠突破可能性"},
+
+ballscrew:{title:"滾珠螺桿 / 線性滑軌",
+tags:[{t:"精密傳動",c:"global"},{t:"機器人/工具機",c:"global"}],
+what:"滾珠螺桿將旋轉運動轉為精密線性運動，是工具機、機器人線性致動器、半導體設備的核心精密零件。人形機器人部分廠商（Tesla Optimus）採用滾珠螺桿線性致動器取代傳統諧波減速機，為上銀帶來新市場。",
+players:[
+{name:"上銀 (2049)",tag:"tw",desc:"亞洲滾珠螺桿、線性滑軌龍頭，人形機器人線性致動器採用者（Tesla Optimus 供應商傳聞），也受益半導體設備需求。"},
+{name:"PMI (銀泰科技)",tag:"tw",desc:"台灣次要滾珠螺桿廠，以工具機市場為主。"},
+{name:"THK（日）",tag:"global",desc:"日本線性導引龍頭，工業機器人與工具機市場市佔高。"},
+],
+tw:"上銀（2049）為台股最直接的精密傳動受益標的，同時受惠半導體設備與人形機器人兩大主題。",
+ask:"上銀滾珠螺桿切入人形機器人的機會"},
+
+servo:{title:"伺服馬達 / 驅動器",
+tags:[{t:"精密傳動",c:"global"},{t:"機器人動力",c:"global"}],
+what:"伺服馬達透過閉迴路控制精確調節轉速與扭矩，是工業機器人、CNC 工具機、人形機器人的動力來源。搭配驅動器（Servo Drive）實現精準位置控制。AI 工廠自動化加速推動高階伺服系統需求。",
+players:[
+{name:"台達電 (2308)",tag:"tw",desc:"台灣最大伺服馬達廠，切入機器人與 CNC 自動化，也供應電動車充電系統。"},
+{name:"東元 (1504)",tag:"tw",desc:"馬達廠，工業伺服馬達與 BLDC 馬達並行，受益自動化升級。"},
+{name:"安川 / Fanuc（日）",tag:"global",desc:"工業機器人伺服馬達龍頭，高精度伺服驅動器全球市佔最高。"},
+],
+tw:"台達電（2308）為台股最大伺服馬達受益股，人形機器人與工業自動化雙主題；東元（1504）次之。",
+ask:"台達電伺服馬達在機器人自動化的競爭實力"},
+
+vision:{title:"機器視覺系統",
+tags:[{t:"AI感知",c:"global"},{t:"機器人/半導體",c:"global"}],
+what:"機器視覺是機器人感知環境的核心，結合工業相機、AI 影像辨識（深度學習）、3D 點雲感測（LiDAR/結構光）等技術。半導體 AOI、人形機器人手眼協調、自駕車感知均需機器視覺。",
+players:[
+{name:"Cognex（美）",tag:"global",desc:"工業機器視覺全球龍頭，深度學習辨識模組市佔最高。"},
+{name:"所羅門 (2359)",tag:"tw",desc:"台灣機器視覺 AI 公司，工業機器人手眼協調系統，切入人形機器人感知供應鏈。"},
+{name:"由田新技（未上市）",tag:"tw",desc:"AOI 視覺系統廠，供應半導體與面板檢測設備。"},
+],
+tw:"所羅門（2359）為台股機器視覺代表標的，人形機器人視覺系統潛在供應商；精測電子（6510）半導體測試視覺相關。",
+ask:"所羅門在人形機器人視覺系統的競爭地位"},
+
+// ── 能源 ──────────────────────────────────────────────
+energy_grid:{title:"電網 / 智慧電網",
+tags:[{t:"能源基礎設施",c:"global"},{t:"AI用電剛需",c:"global"}],
+what:"AI 資料中心用電需求暴增，全球電網升級成剛性需求。智慧電網包含 HVDC 高壓直流輸電、GIS 氣體絕緣開關、AMI 智慧電表、SCADA 能源管理。美國 IRA 法案推動本土電網投資，台灣配電系統升級亦加速進行。",
+players:[
+{name:"ABB / Siemens",tag:"global",desc:"全球電網設備龍頭，HVDC 與 GIS 設備交期已拉長至 2-3 年，供不應求。"},
+{name:"華城 (1519)",tag:"tw",desc:"高壓變壓器廠，AI 資料中心高壓供電設備受益，2024 年股價暴漲為市場焦點。"},
+{name:"士林電機 (1503)",tag:"tw",desc:"台灣變壓器與開關設備廠，受益本土電網升級需求。"},
+{name:"中興電工 (1513)",tag:"tw",desc:"電力設備廠，變壓器與配電盤製造，穩定受益。"},
+{name:"亞力 (1514)",tag:"tw",desc:"配電盤、自動化控制設備，電網升級受益股。"},
+],
+tw:"台股電網：華城（1519）、士林電機（1503）、中興電工（1513）、亞力（1514）。AI 資料中心帶動高壓變壓器需求是近期最強驅動力。",
+ask:"台灣電網升級與 AI 資料中心用電需求連動分析"},
+
+storage:{title:"儲能系統",
+tags:[{t:"能源",c:"global"},{t:"再生能源配套",c:"global"}],
+what:"儲能系統（ESS）整合電池（LFP 磷酸鐵鋰為主）、BMS 電池管理系統、PCS 儲能變流器，用於電網調峰、再生能源配套、資料中心備援。全球裝機量持續高速成長，台灣廠商在 PCS 與系統整合有競爭力。",
+players:[
+{name:"CATL（中）",tag:"cn",desc:"全球最大儲能電池廠，LFP 電芯主供全球 ESS 市場，成本最低。"},
+{name:"台達電 (2308)",tag:"tw",desc:"PCS 儲能變流器與能源管理系統，台灣最強的儲能系統整合商。"},
+{name:"禾茂 / 台泥能源",tag:"tw",desc:"本土儲能系統開發商，配合台電調頻電力。"},
+],
+tw:"台達電（2308）PCS 最核心；必翔（1729）車用電池跨入儲能；碩禾（3691）太陽能電池材料跨儲能。電池芯主要依賴進口。",
+ask:"台灣儲能系統廠商的競爭優勢"},
+
+// ── 顯示器 ──────────────────────────────────────────────
+miniled:{title:"Mini LED 背光/直顯",
+tags:[{t:"顯示器",c:"cn"},{t:"蘋果/車載題材",c:"global"}],
+what:"Mini LED 以 100-200μm 尺寸 LED 晶粒作背光，透過局部調光（Local Dimming）實現高對比、廣色域。蘋果 iPad Pro/MacBook Pro 導入後帶動市場成熟，延伸至 TV、車載、電競顯示器。",
+players:[
+{name:"晶電 (2448)",tag:"tw",desc:"台灣 Mini LED 晶粒龍頭，供應蘋果與各大 TV 品牌，最大直接受益廠。"},
+{name:"隆達 (3698)",tag:"tw",desc:"鴻海旗下 LED 廠，積極切入 Mini LED 背光市場。"},
+{name:"聚積 (3527)",tag:"tw",desc:"Mini LED 驅動 IC，局部調光控制關鍵晶片，技術門檻高。"},
+{name:"群創 (3481)",tag:"tw",desc:"Mini LED 背光模組整合商，同時布局 FOPLP 面板題材。"},
+],
+tw:"台股：晶電（2448）、隆達（3698）、聚積（3527）、友達（2409）、群創（3481）。蘋果採購比重是最重要的觀察指標。",
+ask:"Mini LED 和 Micro LED 的技術路線比較"},
+
+// ── 航運 ──────────────────────────────────────────────
+shipping:{title:"航運",
+tags:[{t:"傳產",c:"cn"},{t:"景氣循環",c:"global"}],
+what:"航運分貨櫃（Container）、散裝（Dry Bulk）、油輪（Tanker）、LNG 船等。貨櫃航運受全球貿易量波動最大；LNG 船受能源轉型需求帶動，造船需求旺盛。運費指數（BDI、CCFI、SCFI）是最重要的領先指標。",
+players:[
+{name:"長榮 (2603)",tag:"tw",desc:"台灣最大貨櫃航運公司，全球前五，獲利彈性大、高股息配息政策為市場關注重點。"},
+{name:"陽明 (2609)",tag:"tw",desc:"台灣第二大貨櫃航運，國發會持股，獲利波動大，政策面有一定支撐。"},
+{name:"萬海 (2615)",tag:"tw",desc:"亞洲區域航線為主，近洋貨量能見度較高，受大西洋航線影響較低。"},
+],
+tw:"長榮（2603）、陽明（2609）、萬海（2615）為台股三大貨櫃航運標的。散裝船：裕民（2606）。核心觀察指標：SCFI/CCFI 指數、Red Sea 繞行補貼、全球貿易量。",
+ask:"2025 年貨櫃航運景氣展望與三大台廠比較"},
+
+// ── CoWoS 其他子節點 ──────────────────────────────────────────────
+hbm_pkg:{title:"HBM 封裝",
+tags:[{t:"先進封裝",c:"global"},{t:"TSMC CoWoS",c:"tw"}],
+what:"HBM 封裝是將多顆 DRAM Die 堆疊後，再透過 TSV 與 Logic Die 連接，最終整合至 CoWoS 基板上的完整流程。製程包含 TSV 鑽孔、Die Stack 接合、底部填充（Underfill/MR-MUF）、最終 CoWoS 封裝。良率管理是核心競爭力。",
+players:[
+{name:"SK 海力士",tag:"global",desc:"HBM 封裝自製（前段 TSV + 堆疊），採用 MR-MUF 技術改善散熱與良率，直接交付 TSMC CoWoS。"},
+{name:"三星",tag:"global",desc:"HBM 封裝自製，TC-NCF（熱壓非導電薄膜）為主，良率歷史上低於 SK 海力士。"},
+{name:"TSMC",tag:"tw",desc:"負責 HBM + GPU Die 的 CoWoS 整合封裝，是整個 AI GPU 封裝的最終整合者。"},
+],
+tw:"TSMC 為台股 HBM 封裝最大受益者；後段日月光（3711）協助 TSMC 轉包；測試：京元電（2449）、欣銓（3264）。",
+ask:"HBM 封裝製程中 MR-MUF 技術的優勢"},
+
+// ── 製造子節點 ──────────────────────────────────────────────
+adv_node:{title:"先進製程（2/3/5nm）",
+tags:[{t:"晶圓代工",c:"tw"},{t:"AI晶片核心",c:"global"}],
+what:"先進製程指 7nm 以下節點，目前量產主力為 3nm（N3E）與 5nm，2nm（N2）預計 2025 年量產。AI GPU（NVIDIA B200 採用 TSMC 4nm）、AI ASIC（Google TPU、Amazon Trainium 採用 3nm）均集中在先進製程。先進製程門檻極高，全球僅 TSMC、三星、Intel 可量產 3nm 以下。",
+players:[
+{name:"TSMC",tag:"tw",desc:"全球先進製程龍頭，3nm/2nm 量產計畫均最確定，AI 晶片幾乎全委託 TSMC。N2 製程相較 N3E 效能提升 10-15%、功耗降低 25-30%。"},
+{name:"三星",tag:"global",desc:"3nm GAA 良率仍低於 TSMC，高階 AI 客戶認證進度緩慢，主攻自家 Exynos 與部分 Qualcomm 訂單。"},
+{name:"Intel",tag:"global",desc:"Intel 18A 製程（相當於 1.8nm）預計 2025 年量產，導入 RibbonFET + PowerVia，若良率達標可望重返競爭。"},
+],
+tw:"TSMC 為台股最直接受益；CoWoS 封裝相關供應鏈（日月光 3711、南電 8046）隨先進製程需求連動成長。",
+ask:"TSMC N2 製程的技術優勢與量產時程"},
+
+mature_node:{title:"成熟製程（28/40/55nm）",
+tags:[{t:"晶圓代工",c:"tw"},{t:"車用/工控",c:"global"}],
+what:"成熟製程（28nm 以上）因技術門檻低，近年中國大陸廠商（中芯、華虹）快速擴產導致產能過剩、價格壓力大。但車用 IC、工控、電源管理等應用仍對特殊製程（HV、BCD）有穩定需求。",
+players:[
+{name:"世界先進 (5347)",tag:"tw",desc:"台灣特殊製程（HV、BCD、CIS）專業代工廠，車用與工控客戶結構穩健，受中國產能過剩衝擊相對小。"},
+{name:"聯電 (2303)",tag:"tw",desc:"全球第三大晶圓代工，28nm 為主力，受中國產能競爭壓力較大，但日本 JASM 廠有政策保護。"},
+{name:"中芯 (0981.HK)",tag:"cn",desc:"中國最大晶圓代工，28nm 大量擴產，對台廠成熟製程造成價格壓力。"},
+],
+tw:"世界先進（5347）特殊製程護城河較高；聯電（2303）成熟製程面臨中國競爭。觀察車用 IC 認證拉力能否抵銷價格壓力。",
+ask:"台灣成熟製程代工廠如何應對中國產能競爭"},
+
+special_node:{title:"特殊製程（HV/BCD/CIS/RF）",
+tags:[{t:"晶圓代工",c:"tw"},{t:"利基市場",c:"global"}],
+what:"特殊製程是在標準 CMOS 基礎上加入特殊功能：HV（High Voltage，高耐壓）用於電源管理；BCD（Bipolar-CMOS-DMOS）用於類比混訊；CIS（CMOS Image Sensor）用於相機感測；RF（Radio Frequency）用於無線通訊。技術定制化高、客戶黏性強，是台廠對抗中國擴產的護城河。",
+players:[
+{name:"世界先進 (5347)",tag:"tw",desc:"HV/BCD 特殊製程台灣龍頭，車用電源 IC 代工，美國廠商客戶比重高。"},
+{name:"穩懋 (3105)",tag:"tw",desc:"RF GaAs/GaN 代工廠，5G 射頻前端模組關鍵製程，Wi-Fi/5G 需求驅動。"},
+{name:"精材 (3374)",tag:"tw",desc:"CIS 晶圓級封裝，SONY/三星 CMOS 感測器後段封裝供應商。"},
+],
+tw:"世界先進（5347）HV/BCD；穩懋（3105）RF 砷化鎵；精材（3374）CIS 封裝；穩懋、宏捷科（8086）是 5G RF 前端核心台廠。",
+ask:"穩懋在 5G 射頻前端的競爭地位"},
+
+};
+
+const DATA=[
+{id:"semi",label:"半導體",children:[
+  {id:"mfg",label:"製造",children:[
+    {id:"adv",label:"先進製程",infoKey:"adv_node",children:[
+      {label:"2nm (N2, 2025量產)"},{label:"3nm (N3E, 量產中)"},{label:"5nm (N5, 主流)"},{label:"Intel 18A競爭"}
+    ]},
+    {id:"spe",label:"特殊製程",infoKey:"special_node",children:[
+      {label:"HV 高壓（世界先進）"},{label:"BCD（類比混訊）"},{label:"CIS 影像感測（精材）"},{label:"RF 射頻（穩懋）"}
+    ]},
+    {id:"mat2",label:"成熟製程",infoKey:"mature_node",children:[
+      {label:"28nm（聯電 2303）"},{label:"40nm"},{label:"55nm"},{label:"中國擴產競爭"}
+    ]}
+  ]},
+  {id:"pkg",label:"封裝測試",children:[
+    {id:"adpkg",label:"先進封裝",children:[
+      {id:"cowos",label:"CoWoS 整體",infoKey:"cowos",children:[
+        {id:"cowos_s",label:"CoWoS-S（矽中介層）",infoKey:"cowos_s"},
+        {id:"cowos_l",label:"CoWoS-L（大面積+RDL）",infoKey:"cowos_l"},
+        {id:"cowos_r",label:"CoWoS-R（純RDL，無矽）",infoKey:"cowos_r"},
+      ]},
+      {id:"foplp",label:"FOPLP / 玻璃載板 TGV",infoKey:"foplp"},
+      {id:"soic",label:"SoIC 3D堆疊",infoKey:"soic"},
+      {id:"hbm_pkg",label:"HBM 封裝",infoKey:"hbm_pkg"},
+      {label:"Fan-Out (InFO)"},{label:"Chiplet 整合"},{label:"2.5D/3D IC"}
+    ]},
+    {id:"test",label:"測試",children:[
+      {id:"probe",label:"探針卡",infoKey:"probe"},
+      {label:"SoC 測試（京元電 2449）"},{label:"記憶體測試（欣銓 3264）"},{label:"Burn-in 測試"}
+    ]}
+  ]},
+  {id:"equip",label:"設備",children:[
+    {id:"euv",label:"EUV 極紫外光",infoKey:"euv"},
+    {id:"aoi",label:"AOI / 光學檢測",infoKey:"aoi"},
+    {label:"DUV 曝光機 (ASML/Nikon)"},{label:"蝕刻機 (Lam Research)"},{label:"CMP 研磨（KLA）"},
+    {label:"ALD/CVD 鍍膜 (AMAT)"},{label:"清洗設備（弘塑 3131）"}
+  ]},
+  {id:"mat",label:"材料",children:[
+    {label:"光阻（住友化學/JSR）"},{label:"CMP Slurry 研磨液"},
+    {label:"特殊氣體（林德/大陽日酸）"},{label:"靶材（光洋應用材料）"},{label:"矽晶圓（環球晶 6488）"}
+  ]},
+  {id:"ic",label:"IC 設計",children:[
+    {label:"CPU（Intel/AMD）"},{label:"GPU（NVIDIA/AMD）"},
+    {id:"ai_asic",label:"AI ASIC 自研晶片",infoKey:"ai_asic"},
+    {label:"NPU / Edge AI"},{label:"網通 IC（Broadcom/Marvell）"},
+    {id:"pmic",label:"PMIC 電源管理 IC",infoKey:"pmic"},
+    {label:"MCU（瑞薩/ST/恩智浦）"},{label:"驅動 IC（奕力 3598/聚積 3527）"},
+    {id:"serdes",label:"SerDes / 高速傳輸 IC",infoKey:"serdes"},
+    {id:"wifi7",label:"WiFi 7 無線 IC",infoKey:"wifi7"},
+    {id:"pcie",label:"PCIe 5.0 / CXL 介面",infoKey:"pcie"},
+    {label:"車用 IC（恩智浦/英飛凌）"}
+  ]},
+  {id:"mem",label:"記憶體",children:[
+    {id:"dram",label:"DRAM",infoKey:"dram",children:[
+      {label:"DDR3（華邦電 2344）"},{label:"DDR4（南亞科 2408）"},
+      {label:"DDR5（三大廠主力）"},{label:"LPDDR5X（行動裝置）"}
+    ]},
+    {id:"hbm",label:"HBM 高頻寬記憶體",infoKey:"hbm",children:[
+      {id:"hbm2e",label:"HBM2E（A100世代）",infoKey:"hbm2e"},
+      {id:"hbm3",label:"HBM3（H100世代）",infoKey:"hbm3"},
+      {id:"hbm3e",label:"HBM3E（B200主力）",infoKey:"hbm3e"},
+      {id:"hbm4",label:"HBM4（2026+）",infoKey:"hbm4"},
+    ]},
+    {id:"nand",label:"NAND Flash",infoKey:"nand",children:[
+      {label:"SLC（旺宏利基）"},{label:"MLC"},{label:"TLC（主流）"},{label:"QLC（大容量）"}
+    ]},
+    {id:"nor",label:"NOR Flash",infoKey:"nor",children:[
+      {label:"旺宏 MX（2337）— SLC/MLC 龍頭"},{label:"華邦電（2344）— W25系列"},
+      {label:"應用：車用ECU/IoT韌體"}
+    ]},
+    {id:"newmem",label:"新型記憶體",children:[{label:"MRAM（磁性）"},{label:"ReRAM（電阻式）"},{label:"PCM（相變）"}]},
+    {label:"SSD 控制器（慧榮 8299、群聯 8284）"}
+  ]}
+]},
+{id:"opt",label:"光通訊",children:[
+  {id:"cpo",label:"CPO 共封裝光學",infoKey:"cpo",children:[
+    {id:"optical_engine",label:"光引擎（CPO核心）",infoKey:"optical_engine"},
+    {label:"矽光子 PIC"},{label:"光纖陣列 FAU"},{label:"雷射光源（InP/VCSEL）"},
+    {label:"Driver IC"},{label:"TIA 跨阻放大器"},{label:"DSP 數位訊號處理"},
+    {label:"封裝：頎邦 6147、南茂 8150"}
+  ]},
+  {id:"sph",label:"矽光子 Silicon Photonics",infoKey:"sph",children:[
+    {label:"光波導（SOI平台）"},{label:"Mach-Zehnder 調變器"},{label:"光偵測器 Ge-PD"},
+    {label:"PIC 光子積體電路"},{label:"TSMC SiPh PDK"}
+  ]},
+  {id:"tfln",label:"TFLN 薄膜鈮酸鋰",infoKey:"tfln",children:[
+    {label:"高速調變器（100GHz+）"},{label:"800G/1.6T 光模組"},{label:"AI資料中心骨幹應用"}
+  ]},
+  {id:"inp",label:"InP 磷化銦",infoKey:"inp",children:[
+    {label:"EML 電吸收調變雷射"},{label:"DFB Laser"},{label:"光放大器 EDFA"},
+    {label:"聯亞 (3081) — 台股直接標的"}
+  ]},
+  {label:"光模組（400G/800G/1.6T）"},{label:"光纖光纜"}
+]},
+{id:"ai",label:"AI / 資料中心",children:[
+  {id:"aisvr",label:"AI 伺服器",children:[
+    {label:"GPU 伺服器（NVIDIA H200/B200）"},{label:"ASIC 伺服器（Google TPU/Amazon Trainium）"},
+    {label:"CoWoS 封裝（TSMC）"},{label:"CPO 光通訊整合"},{label:"網通交換器"}
+  ]},
+  {id:"liquid_cool",label:"液冷 / 散熱",infoKey:"liquid_cool",children:[
+    {label:"直接液冷 DLC（冷板）"},{label:"浸沒式冷卻（電子氟化液）"},
+    {label:"CDU 冷卻分配單元（雙鴻 3324）"},{label:"導熱材料 TIM（奇鋐 3017）"}
+  ]},
+  {id:"bbu",label:"電源（BBU/UPS/PSU）",infoKey:"bbu",children:[
+    {label:"BBU 電池備援（台達電 2308）"},{label:"UPS 不斷電"},{label:"PSU 高瓦數電源供應器"},
+    {label:"CRPS 通用電源規格（光寶科 2301）"}
+  ]},
+  {id:"net",label:"網通 / 交換器",children:[
+    {id:"ethernet_ai",label:"400G/800G/1.6T 乙太網路",infoKey:"ethernet_ai"},
+    {id:"infiniband",label:"InfiniBand",infoKey:"infiniband"},
+    {label:"網通 IC（Broadcom 博通）"},{label:"光收發模組 QSFP-DD/OSFP"}
+  ]}
+]},
+{id:"pcb",label:"PCB / 載板",children:[
+  {id:"abf",label:"ABF 載板 / IC Substrate",infoKey:"abf",children:[
+    {label:"欣興 (3037) — 最大台廠"},{label:"南電 (8046) — CoWoS基板"},
+    {label:"景碩 (3189)"},{label:"Ibiden（日本龍頭）"}
+  ]},
+  {id:"pcbg",label:"一般 PCB",children:[
+    {label:"AI Server Back Plane"},{label:"車用 PCB"},{label:"軟板 FPC（台郡 6269）"}
+  ]},
+  {id:"hf_pcb",label:"高頻高速 PCB 材料",infoKey:"hf_pcb",children:[
+    {label:"台光電 (2383) — 高頻基材龍頭"},{label:"聯茂 (6213)"},{label:"低 Dk/Df 材料"}
+  ]}
+]},
+{id:"passive",label:"電子零組件",children:[
+  {id:"pasv",label:"被動元件",children:[
+    {id:"mlcc",label:"MLCC 電容",infoKey:"mlcc",children:[
+      {label:"車用高階（村田/國巨 2327）"},{label:"AI伺服器板級 MLCC"},{label:"鋁電解電容"}
+    ]},
+    {id:"resistor",label:"電阻",infoKey:"resistor",children:[
+      {label:"厚膜（國巨 2327、旺詮 2437）"},{label:"薄膜精密電阻（車用）"},{label:"光頡 (2340)"}
+    ]},
+    {id:"inductor",label:"電感",infoKey:"inductor",children:[
+      {label:"功率電感（奇力新 2456）"},{label:"一體成型電感（AI伺服器VR）"},{label:"乾坤 (2452)"}
+    ]},
+    {label:"保護元件 TVS/ESD（虹揚-KY）"}
+  ]},
+  {id:"conn",label:"連接器",children:[
+    {label:"高速連接器（PCIe/CXL）（嘉澤 3533）"},{label:"板對板 BTB"},
+    {label:"車用連接器"},{label:"Type-C（信邦 3023）"}
+  ]},
+  {id:"lf",label:"導線架 Lead Frame",children:[
+    {label:"銅導線架（順德 2351）"},{label:"鐵鎳合金導線架"},
+    {label:"車用導線架（ASP 提升）"},{label:"MOS/功率元件封裝用"}
+  ]},
+  {id:"heat",label:"散熱元件",children:[
+    {label:"均溫板 VC（奇鋐 3017、雙鴻 3324）"},{label:"熱管 Heat Pipe（超眾 6230）"},
+    {label:"石墨散熱片"},{label:"TIM 導熱材料"}
+  ]},
+  {label:"電池（鋰電/固態電池）"}
+]},
+{id:"disp",label:"顯示器",children:[
+  {id:"miniled",label:"Mini LED",infoKey:"miniled",children:[
+    {label:"晶粒：晶電 2448、隆達 3698"},{label:"驅動 IC：聚積 3527"},
+    {label:"模組：群創 3481、友達 2409"},{label:"車載 Mini LED 顯示"}
+  ]},
+  {label:"OLED（三星/LG 主導）"},{label:"Micro LED（長期，技術瓶頸大）"}
+]},
+{id:"ev",label:"電動車",children:[
+  {id:"sic",label:"SiC 碳化矽功率元件",infoKey:"sic",children:[
+    {label:"SiC MOSFET 車用逆變器（ST/英飛凌）"},{label:"漢磊 (3707) — 台廠標的"},
+    {label:"嘉晶 (3016) — 磊晶材料"}
+  ]},
+  {id:"gan",label:"GaN 氮化鎵",infoKey:"gan",children:[
+    {label:"快充充電器（致新 8081）"},{label:"車載 OBC（高壓 GaN 650V）"},
+    {label:"資料中心電源（台半 5425）"}
+  ]},
+  {label:"車用 PCB"},
+  {label:"車用鏡頭 / ADAS（同欣電 6271、穩懋 3105）"},
+  {id:"charge",label:"充電樁",children:[
+    {label:"直流快充 DC（台達電 2308）"},{label:"交流慢充 AC"},{label:"車載充電器 OBC"},
+    {label:"充電管理 IC（立錡 6286）"}
+  ]},
+  {label:"車用記憶體（旺宏 NOR、華邦電 NOR）"}
+]},
+{id:"robot",label:"機器人",children:[
+  {id:"humanoid",label:"人形機器人",infoKey:"humanoid",children:[
+    {label:"感知：視覺/LiDAR（所羅門 2359）"},{label:"控制器/AI推論晶片"},
+    {label:"致動器：線性/旋轉"},
+    {label:"上銀 (2049)、台達電 (2308)"}
+  ]},
+  {id:"key",label:"關鍵零組件",children:[
+    {id:"reducer",label:"減速機",infoKey:"reducer",children:[
+      {label:"諧波減速機（哈默納科壟斷）"},{label:"RV 減速機（納博特斯克）"},
+      {label:"行星減速機（成本低）"}
+    ]},
+    {id:"ballscrew",label:"滾珠螺桿 / 線性滑軌",infoKey:"ballscrew",children:[
+      {label:"上銀 (2049) — 台灣龍頭"},{label:"PMI 銀泰科技"}
+    ]},
+    {id:"servo",label:"伺服馬達 / 驅動器",infoKey:"servo",children:[
+      {label:"台達電 (2308)"},{label:"東元 (1504)"},{label:"安川/Fanuc（日系龍頭）"}
+    ]},
+    {id:"vision",label:"機器視覺",infoKey:"vision",children:[
+      {label:"所羅門 (2359) — 台股標的"},{label:"Cognex（美國龍頭）"},
+      {label:"3D 點雲/深度學習辨識"}
+    ]},
+    {label:"編碼器（Encoder）"},{label:"力矩感測器（Torque Sensor）"}
+  ]},
+  {label:"協作機器人 (Cobot)"},{label:"工業機器人（ABB/Fanuc/安川）"}
+]},
+{id:"energy",label:"能源",children:[
+  {id:"solar",label:"太陽能",children:[
+    {label:"PERC/TOPCon/HJT 電池"},{label:"矽晶片（綠能 3519）"},
+    {label:"逆變器（台達電 2308）"},{label:"EPC 工程整合"}
+  ]},
+  {id:"wind",label:"風電",children:[
+    {label:"離岸風電（上緯投控 3708）"},{label:"葉片（天力）"},
+    {label:"風電齒輪箱"},{label:"台灣目標 2035 年 20GW 離岸"}
+  ]},
+  {id:"storage",label:"儲能系統 ESS",infoKey:"storage",children:[
+    {label:"LFP 電芯（CATL/比亞迪）"},{label:"BMS 電池管理（台達電）"},
+    {label:"PCS 儲能變流器（台達電 2308）"},{label:"調頻電力服務"}
+  ]},
+  {id:"energy_grid",label:"電網 / 智慧電網",infoKey:"energy_grid",children:[
+    {label:"HVDC 高壓直流輸電（ABB）"},{label:"GIS 氣體絕緣開關"},
+    {label:"AMI 智慧電表"},{label:"華城 1519、士林電機 1503、中興電工 1513"}
+  ]}
+]},
+{id:"trad",label:"傳產（航運為主）",children:[
+  {id:"shipping",label:"航運",infoKey:"shipping",children:[
+    {label:"貨櫃：長榮 2603、陽明 2609、萬海 2615"},{label:"散裝：裕民 (2606)"},
+    {label:"SCFI/CCFI 運費指數觀察"},{label:"LNG 船造船需求"}
+  ]},
+  {label:"鋼鐵（中鋼 2002）"},{label:"塑化（台塑 1301）"}
+]}
+];
+
+let openSet=new Set(["semi","mem","hbm","opt","ai","robot","energy","pkg","adpkg"]);
+let activeEl=null;
+
+function showPanel(key){
+  const info=INFO[key];
+  const p=document.getElementById("panel");
+  const emp=document.getElementById("panel-empty");
+  if(!info){p.style.display="none";emp.style.display="flex";return;}
+  emp.style.display="none";
+  p.style.display="block";
+  const tagHtml=(info.tags||[]).map(t=>`<span class="ptag ${t.c}">${t.t}</span>`).join("");
+  const playersHtml=(info.players||[]).map(pl=>`
+    <div class="pcard">
+      <div class="pname">${pl.name} <span class="ptag ${pl.tag}" style="font-size:10px;padding:0 5px;">${pl.tag==="tw"?"台灣":pl.tag==="cn"?"中國":"全球"}</span></div>
+      <div class="pdesc">${pl.desc}</div>
+    </div>`).join("");
+  p.innerHTML=`
+    <div class="phead">${info.title}</div>
+    <div class="section"><div>${tagHtml}</div></div>
+    <div class="section">
+      <div class="slabel">是什麼</div>
+      <div class="body">${info.what}</div>
+    </div>
+    <div class="section">
+      <div class="slabel">主要玩家與技術差異</div>
+      ${playersHtml}
+    </div>
+    <div class="section">
+      <div class="slabel">台股相關標的</div>
+      <div class="body">${info.tw}</div>
+    </div>
+    <button class="ask-btn" onclick="sendPrompt('${info.ask}')">深入研究：${info.ask} ↗</button>
+  `;
+}
+
+function build(nodes,depth){
+  const ul=document.createElement("ul");
+  ul.className="tree";
+  nodes.forEach(n=>{
+    const li=document.createElement("li");
+    li.className="d"+Math.min(depth,4);
+    if(n.infoKey) li.classList.add("has-info");
+    const row=document.createElement("div");
+    row.className="nr";
+    const ar=document.createElement("span");
+    const hasChildren=n.children&&n.children.length>0;
+    ar.className="ar"+(hasChildren?"":"lf");
+    if(hasChildren&&openSet.has(n.id)) ar.classList.add("open");
+    ar.textContent="▶";
+    const chip=document.createElement("span");
+    chip.className="chip";
+    chip.dataset.label=n.label;
+    chip.textContent=n.label;
+    row.appendChild(ar);row.appendChild(chip);
+    li.appendChild(row);
+    if(hasChildren){
+      const sub=build(n.children,depth+1);
+      if(!openSet.has(n.id)) sub.classList.add("hidden");
+      li.appendChild(sub);
+      ar.addEventListener("click",e=>{e.stopPropagation();const o=!sub.classList.contains("hidden");sub.classList.toggle("hidden",o);ar.classList.toggle("open",!o);if(!o)openSet.add(n.id);else openSet.delete(n.id);});
+    }
+    if(n.infoKey){
+      chip.addEventListener("click",e=>{
+        e.stopPropagation();
+        if(activeEl) activeEl.classList.remove("active");
+        row.classList.add("active");activeEl=row;
+        showPanel(n.infoKey);
+      });
+    }
+    ul.appendChild(li);
+  });
+  return ul;
+}
+
+function doSearch(q){
+  q=q.trim().toLowerCase();
+  document.querySelectorAll(".chip").forEach(c=>{
+    const txt=c.dataset.label||"";
+    if(q&&txt.toLowerCase().includes(q)){
+      const i=txt.toLowerCase().indexOf(q);
+      c.innerHTML=txt.slice(0,i)+'<mark class="hl">'+txt.slice(i,i+q.length)+"</mark>"+txt.slice(i+q.length);
+      let el=c.closest("ul.tree");
+      while(el){el.classList.remove("hidden");const pr=el.previousElementSibling;if(pr){const a=pr.querySelector(".ar");if(a)a.classList.add("open");}el=el.parentElement?.closest("ul.tree");}
+    } else {
+      c.textContent=txt;
+    }
+  });
+}
+
+const root=document.getElementById("tree");
+DATA.forEach(n=>{
+  const li=document.createElement("li");
+  li.className="d0"+(n.infoKey?" has-info":"");
+  const row=document.createElement("div");row.className="nr";
+  const ar=document.createElement("span");
+  const hasC=n.children&&n.children.length>0;
+  ar.className="ar"+(hasC?"":"lf");
+  if(hasC&&openSet.has(n.id)) ar.classList.add("open");
+  ar.textContent="▶";
+  const chip=document.createElement("span");
+  chip.className="chip";chip.dataset.label=n.label;chip.textContent=n.label;
+  if(n.infoKey){chip.style.cursor="pointer";chip.style.textDecoration="underline dotted";}
+  row.appendChild(ar);row.appendChild(chip);li.appendChild(row);
+  if(hasC){
+    const sub=build(n.children,1);
+    if(!openSet.has(n.id)) sub.classList.add("hidden");
+    li.appendChild(sub);
+    ar.addEventListener("click",e=>{e.stopPropagation();const o=!sub.classList.contains("hidden");sub.classList.toggle("hidden",o);ar.classList.toggle("open",!o);if(!o)openSet.add(n.id);else openSet.delete(n.id);});
+  }
+  if(n.infoKey){chip.addEventListener("click",e=>{e.stopPropagation();if(activeEl)activeEl.classList.remove("active");row.classList.add("active");activeEl=row;showPanel(n.infoKey);});}
+  root.appendChild(li);
+});
+</script>
+</body></html>
